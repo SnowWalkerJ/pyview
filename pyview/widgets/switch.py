@@ -1,32 +1,20 @@
 
 import jinja2
 
-from ..core import Widget
+from ..core import BuiltinWidget
 
 
-class Switch(Widget):
+class Switch(BuiltinWidget):
     def __init__(self, description=None):
         super(Switch, self).__init__()
         self.description = description
         self.options = [True, False]
 
-    def template(self):
+    def tag_(self, attributes):
         return jinja2.Template("""{% if description %}
         <label for="{{id}}">{{description}}</label>
         {% endif %}
-        <i-switch v-on:on-change="this.on_change"
-            v-bind:value="this.value" />
+        <i-switch id="{{id}}"{{attributes}} />
         """).render(id=self.id,
+                    attributes=attributes,
                     description=self.description)
-
-    def methods(self):
-        return """
-        {
-            on_change(value) {
-                this.$emit('input', value);
-            }
-        }
-        """
-
-    def props(self):
-        return "['value']"

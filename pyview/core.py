@@ -41,7 +41,7 @@ class Widget:
             data=self.data(),
             methods=self.methods(),
             props=self.props(),
-            components=", ".join((comp.id for comp in self.components())),
+            components=", ".join((comp.id for comp in self.components() if not isinstance(comp, BuiltinWidget))),
             html=self.template())
 
     def style(self):
@@ -55,17 +55,37 @@ class Widget:
         <script> var {{id}} = Vue.component('{{id}}', {{script}}); </script>"""
         return jinja2.Template(template).render(id=self.id, script=self.script())
 
+    def tag_(self, attributes):
+        return f"<{self.id}{attributes} />"
+
+    def tag(self, **kwargs):
+        attributes = []
+        for key, value in kwargs.items():
+            if key[:2] == 'b_':
+                key = ":" + key[2:]
+            elif key[:2] == "e_":
+                key = "@" + key[2:]
+            elif key[:2] == "v_":
+                key = key.replace("_", "-")
+            attributes.append(f' {key}="{value}"')
+        attributes = "".join(attributes)
+        return self.tag_(attributes)
+
     def __repr__(self):
-        return f"<{self.id} />"
+        return self.tag()
+
+
+class BuiltinWidget(Widget):
+    def __init__(self):
+        super(BuiltinWidget, self).__init__()
+
+    def render(self):
+        return ""
 
 
 class Document:
     """文档"""
     def __init__(self):
-        # self.parent = None
-        # self.document = self
-        # self.heads = set()
-        # self.level = 0
         self.sheets = []
         self.frame = Frame(self.sheets)
         self.dependencies = DependencyTree()
@@ -129,7 +149,7 @@ class Frame(Widget):
             template: `{{template}}`
         });""").render(
             tabs=self.sheets,
-            components=",".join(sheet.id for name, sheet in self.sheets),
+            components=",".join(sheet.id for name, sheet in self.sheets if not isinstance(sheet, BuiltinWidget)),
             template=self.template())
 
     def render(self):

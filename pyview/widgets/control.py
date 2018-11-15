@@ -26,12 +26,12 @@ class Controlled(Widget):
         <Row>
         <Col span="6">
         {%- for (name, controller) in controllers -%}
-            <{{controller.id}} v-model="this.{{name}}" @input="(v)=>{this.{{name}}=v}"></{{controller.id}}>
+            {{controller.tag(v_model=name)}}
         {%- endfor -%}
         </Col>
         <Col span="18">
         {%- for (condition, content) in contents -%}
-        <{{content.id}} v-if="{{condition}}"></{{content.id}}>
+        {{content.tag(v_if=condition)}}
         {%- endfor -%}
         </Col>
         </Row>

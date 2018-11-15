@@ -1,10 +1,10 @@
 import ujson
 import jinja2
 
-from ..core import Widget
+from ..core import BuiltinWidget
 
 
-class Radio(Widget):
+class Radio(BuiltinWidget):
     def __init__(self, options=[], description=None):
         super(Radio, self).__init__()
         self.description = description
@@ -12,12 +12,11 @@ class Radio(Widget):
             options = dict(zip(options, options))
         self.options = options
 
-    def template(self):
+    def tag_(self, attributes):
         return jinja2.Template("""{% if description -%}
         <label for="{{id}}">{{description}}</label>
         {%- endif %}
-        <RadioGroup v-on:on-change="this.on_change"
-            v-bind:value="this.value">
+        <RadioGroup{{attributes}}>
         {% for (key, label) in options -%}
         <Radio :label="{{ujson.dumps(key)}}">{{ label }}</Radio>
         {%- endfor %}
@@ -25,16 +24,5 @@ class Radio(Widget):
         """).render(id=self.id,
                     description=self.description,
                     ujson=ujson,
+                    attributes=attributes,
                     options=self.options.items())
-
-    def methods(self):
-        return """
-        {
-            on_change(value) {
-                this.$emit('input', value);
-            }
-        }
-        """
-
-    def props(self):
-        return "['value']"

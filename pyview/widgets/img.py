@@ -5,10 +5,10 @@ import tempfile
 import matplotlib.pyplot as plt
 import wget
 
-from ..core import Widget
+from ..core import BuiltinWidget
 
 
-class Img(Widget):
+class Img(BuiltinWidget):
     def __init__(self, img):
         super(Img, self).__init__()
         if isinstance(img, plt.Figure):
@@ -18,8 +18,8 @@ class Img(Widget):
                 img = self.download(img)
             self.img = self.local_to_b64(img)
 
-    def template(self):
-        return f'<img src="data:image/png;base64,{self.img}">'
+    def tag_(self, attributes):
+        return f'<img src="data:image/png;base64,{self.img}"{attributes}>'
 
     @staticmethod
     def download(url: str):
