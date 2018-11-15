@@ -1,4 +1,4 @@
-
+import ujson
 import jinja2
 
 from ..core import Widget
@@ -19,12 +19,13 @@ class Select(Widget):
         <Select v-on:on-change="this.on_change"
             v-bind:value="this.value">
         {% for (key, label) in options %}
-        <Option :value="key">{{ label }}</Option>
+        <Option :value="{{ujson.dumps(key)}}">{{ label }}</Option>
         {% endfor %}
         </Select>
         """).render(id=self.id,
                     description=self.description,
-                    options=self.options)
+                    ujson=ujson,
+                    options=self.options.items())
 
     def methods(self):
         return """

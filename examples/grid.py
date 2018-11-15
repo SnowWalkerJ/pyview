@@ -19,5 +19,5 @@ grid.add(Text("This is right top"))
 grid.add(Text("This is left bottom"))
 grid.add(Text("This is right bottom"))
 doc.add_sheet("Grid", grid)
-with open("samples/grid.html", "w") as f:
+with open("examples/grid.html", "w") as f:
     f.write(doc.render())

@@ -38,5 +38,5 @@ doc = Document()
 doc.add_sheet("Sheet1", tests)
 doc.add_sheet("Sheet2", TestWidget())
 doc.add_sheet("Sheet3", TestWidget2())
-with open("samples/controlled.html", "w") as f:
+with open("examples/controlled.html", "w") as f:
     f.write(doc.render())

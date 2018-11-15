@@ -1,11 +1,3 @@
-# Pyview
-
-Pyview aims at being a substitute of ipywidgets without the support of Jupyter Notebook.
-It relies on VueJS and iView, and helps you generate static reports efficiently.
-
-## Examples
-
-```python
 from pyview import Document, Widget
 from pyview.widgets import *
 
@@ -28,6 +20,5 @@ def sheet2(visible):
 
 doc.add_sheet("Github", sheet2)
 
-print(doc.render())
-
-```
+with open("examples/example.html", "w") as f:
+    f.write(doc.render())

@@ -1,4 +1,4 @@
-
+import ujson
 import jinja2
 
 from ..core import Widget
@@ -13,18 +13,19 @@ class Radio(Widget):
         self.options = options
 
     def template(self):
-        return jinja2.Template("""{% if description %}
+        return jinja2.Template("""{% if description -%}
         <label for="{{id}}">{{description}}</label>
-        {% endif %}
+        {%- endif %}
         <RadioGroup v-on:on-change="this.on_change"
             v-bind:value="this.value">
-        {% for (key, label) in options %}
-        <Radio :label="key">{{ label }}</Radio>
-        {% endfor %}
+        {% for (key, label) in options -%}
+        <Radio :label="{{ujson.dumps(key)}}">{{ label }}</Radio>
+        {%- endfor %}
         </RadioGroup>
         """).render(id=self.id,
                     description=self.description,
-                    options=self.options)
+                    ujson=ujson,
+                    options=self.options.items())
 
     def methods(self):
         return """

@@ -39,4 +39,4 @@ class Img(Widget):
     @staticmethod
     def local_to_b64(filename: str):
         with open(filename, "rb") as f:
-            return base64.b64encode(f.read())
+            return base64.b64encode(f.read()).decode()

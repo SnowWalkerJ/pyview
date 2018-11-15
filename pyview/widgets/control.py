@@ -23,20 +23,25 @@ class Controlled(Widget):
 
     def template(self):
         return jinja2.Template("""
-        {% for (name, controller) in controllers %}
+        <Row>
+        <Col span="6">
+        {%- for (name, controller) in controllers -%}
             <{{controller.id}} v-model="this.{{name}}" @input="(v)=>{this.{{name}}=v}"></{{controller.id}}>
-        {% endfor %}
-        
-        {% for (condition, content) in contents %}
+        {%- endfor -%}
+        </Col>
+        <Col span="18">
+        {%- for (condition, content) in contents -%}
         <{{content.id}} v-if="{{condition}}"></{{content.id}}>
-        {% endfor %}
+        {%- endfor -%}
+        </Col>
+        </Row>
         """).render(controllers=self.params.items(), contents=self.contents)
 
     def data(self):
         return jinja2.Template("""{
-        {% for (name, widget) in params %}
+        {%- for (name, widget) in params -%}
         {{name}}: {{ujson.dumps(widget.options[0])}} {%if not loop.last %},{% endif %}
-        {% endfor %}
+        {%- endfor -%}
         }""").render(params=self.params.items(), ujson=ujson)
 
     def components(self):
@@ -44,7 +49,6 @@ class Controlled(Widget):
 
     @staticmethod
     def resolve_params(kwargs):
-        print(kwargs)
         conditions = []
         for key, value in kwargs.items():
             condition = "(this.{} == {})".format(key, ujson.dumps(value))

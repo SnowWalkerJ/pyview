@@ -18,5 +18,5 @@ collapse.add("left top", Text("This is left top"))
 collapse.add("right top", Text("This is right top"))
 
 doc.add_sheet("Collapse", collapse)
-with open("samples/collapse.html", "w") as f:
+with open("examples/collapse.html", "w") as f:
     f.write(doc.render())
