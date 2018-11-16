@@ -9,17 +9,24 @@ from ..core import BuiltinWidget
 
 
 class Img(BuiltinWidget):
-    def __init__(self, img):
+    def __init__(self, img, embed=False):
         super(Img, self).__init__()
         if isinstance(img, plt.Figure):
             self.img = self.fig_to_b64(img)
         elif isinstance(img, str):
             if img.startswith("https://") or img.startswith("http://"):
-                img = self.download(img)
-            self.img = self.local_to_b64(img)
+                # Internet
+                if embed:
+                    img = self.download(img)
+                    self.img = self.local_to_b64(img)
+                else:
+                    self.img = img
+            else:
+                # Local
+                self.img = self.local_to_b64(img)
 
     def tag_(self, attributes):
-        return f'<img src="data:image/png;base64,{self.img}"{attributes}>'
+        return f'<img src="{self.img}"{attributes}>'
 
     @staticmethod
     def download(url: str):
@@ -32,11 +39,11 @@ class Img(BuiltinWidget):
         f = io.BytesIO()
         fig.savefig(f, format="png")
         f.seek(0)
-        b64 = base64.b64encode(f.read()).decode()
+        b64 = "data:image/png;base64," + base64.b64encode(f.read()).decode()
         f.close()
         return b64
 
     @staticmethod
     def local_to_b64(filename: str):
         with open(filename, "rb") as f:
-            return base64.b64encode(f.read()).decode()
+            return "data:image/png;base64," + base64.b64encode(f.read()).decode()

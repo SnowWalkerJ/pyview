@@ -13,9 +13,7 @@ class Select(BuiltinWidget):
         self.options = options
 
     def tag_(self, attributes):
-        return jinja2.Template("""{% if description %}
-        <label for="{{id}}">{{description}}</label>
-        {% endif %}
+        return jinja2.Template("""
         <Select{{attributes}}>
         {% for (key, label) in options %}
         <Option :value="{{ujson.dumps(key)}}">{{ label }}</Option>

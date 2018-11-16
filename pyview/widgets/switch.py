@@ -11,9 +11,7 @@ class Switch(BuiltinWidget):
         self.options = [True, False]
 
     def tag_(self, attributes):
-        return jinja2.Template("""{% if description %}
-        <label for="{{id}}">{{description}}</label>
-        {% endif %}
+        return jinja2.Template("""
         <i-switch id="{{id}}"{{attributes}} />
         """).render(id=self.id,
                     attributes=attributes,

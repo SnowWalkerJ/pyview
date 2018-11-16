@@ -104,6 +104,12 @@ class Document:
         <script src="http://vuejs.org/js/vue.min.js"></script>
         <link rel="stylesheet" href="http://unpkg.com/iview/dist/styles/iview.css">
         <script src="http://unpkg.com/iview/dist/iview.min.js"></script>
+        <style>
+            body {
+                padding: 0 5% 0 5%;
+                text-align: center;
+            }
+        </style>
         <head>
         <body>
         {{ dependencies }}

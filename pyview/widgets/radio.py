@@ -13,9 +13,7 @@ class Radio(BuiltinWidget):
         self.options = options
 
     def tag_(self, attributes):
-        return jinja2.Template("""{% if description -%}
-        <label for="{{id}}">{{description}}</label>
-        {%- endif %}
+        return jinja2.Template("""
         <RadioGroup{{attributes}}>
         {% for (key, label) in options -%}
         <Radio :label="{{ujson.dumps(key)}}">{{ label }}</Radio>

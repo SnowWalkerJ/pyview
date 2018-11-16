@@ -23,25 +23,33 @@ class Controlled(Widget):
 
     def template(self):
         return jinja2.Template("""
-        <Row>
-        <Col span="6">
+        <Split v-model="splitPosition">
+        <Form slot="left">
         {%- for (name, controller) in controllers -%}
+            <FormItem label="
+                {%- if controller.description -%}
+                    {{controller.description}}
+                {%- else -%}
+                    {{name}}
+                {%- endif -%}">
             {{controller.tag(v_model=name)}}
+            </FormItem>
         {%- endfor -%}
-        </Col>
-        <Col span="18">
+        </Form>
+        <div slot="right">
         {%- for (condition, content) in contents -%}
         {{content.tag(v_if=condition)}}
         {%- endfor -%}
-        </Col>
-        </Row>
+        </div>
+        </Split>
         """).render(controllers=self.params.items(), contents=self.contents)
 
     def data(self):
         return jinja2.Template("""{
         {%- for (name, widget) in params -%}
-        {{name}}: {{ujson.dumps(widget.options[0])}} {%if not loop.last %},{% endif %}
+            {{name}}: {{ujson.dumps(widget.options[0])}},
         {%- endfor -%}
+            splitPosition: 0.2
         }""").render(params=self.params.items(), ujson=ujson)
 
     def components(self):

@@ -15,9 +15,6 @@ class Slider(BuiltinWidget):
 
     def tag_(self, attributes):
         return jinja2.Template("""
-        {% if description %}
-        <label for="{{id}}">{{description}}</label>
-        {% endif %}
         <Slider id="{{id}}" :min="{{min}}" :max="{{max}}" :step="{{step}}"
             {{attributes}}></Slider>
         """).render(description=self.description, id=self.id, 
