@@ -12,9 +12,12 @@ from pyview.widgets import *
 
 doc = Document()
 
+
+tabs = Tabs()
+
 # It's a single-image page
 sheet1 = Img("https://assets-cdn.github.com/images/modules/logos_page/Octocat.png")
-doc.add_sheet("Octocat", sheet1)
+tabs.add("Octocat", sheet1)
 
 # Sheet2 is an image controlled by a switch
 @controlled_function(
@@ -26,7 +29,9 @@ def sheet2(visible):
     else:
         return Widget()
 
-doc.add_sheet("Github", sheet2)
+tabs.add("Github", sheet2)
+
+doc.set_frame(tabs)
 
 print(doc.render())
 
