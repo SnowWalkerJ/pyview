@@ -6,4 +6,6 @@ from .radio import Radio
 from .select import Select
 from .slider import Slider
 from .switch import Switch
+from .tabs import Tabs
 from .tag import Tag
+from .widget_list import WidgetList

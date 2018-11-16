@@ -27,9 +27,10 @@ class Widget:
     def components(self):
         return []
 
-    def script(self):
+    def script(self, is_frame=False):
         template = jinja2.Template("""
         {
+            {%- if is_frame -%}el: '#frame',{%- endif -%}
             data: function () { return {{data}}; },
             methods: {{methods}},
             props: {{props}},
@@ -41,19 +42,22 @@ class Widget:
             data=self.data(),
             methods=self.methods(),
             props=self.props(),
+            is_frame=is_frame,
             components=", ".join((comp.id for comp in self.components() if not isinstance(comp, BuiltinWidget))),
             html=self.template())
 
     def style(self):
         return ""
 
-    def render(self):
-        # heads = self.head()
-        # if heads:
-        #     self.document.heads.update(set(heads.split("\n")))
-        template = """
-        <script> var {{id}} = Vue.component('{{id}}', {{script}}); </script>"""
-        return jinja2.Template(template).render(id=self.id, script=self.script())
+    def render(self, is_frame=False):
+        if is_frame:
+            return jinja2.Template("""
+            <script> new Vue({{script}}); </script>
+            """).render(script=self.script(is_frame))
+        else:
+            return jinja2.Template("""
+            <script> var {{id}} = Vue.component('{{id}}', {{script}}); </script>
+            """).render(id=self.id, script=self.script(is_frame))
 
     def tag_(self, attributes):
         return f"<{self.id}{attributes} />"
@@ -86,18 +90,20 @@ class BuiltinWidget(Widget):
 class Document:
     """文档"""
     def __init__(self):
-        self.sheets = []
-        self.frame = Frame(self.sheets)
-        self.dependencies = DependencyTree()
-
-    def add_sheet(self, name: str, sheet: Widget):
-        self.sheets.append((name, sheet))
-        self.dependencies.add(sheet)
+        self.frame = None
 
     def render_dependencies(self):
-        return "\n\n".join(widget.render() for widget in self.dependencies.resolve_dependencies())
+        dependencies = DependencyTree()
+        for widget in self.frame.depends_on:
+            dependencies.add(widget)
+        return "\n\n".join(widget.render() for widget in dependencies.resolve_dependencies())
+
+    def set_frame(self, widget):
+        self.frame = widget
 
     def render(self):
+        if not self.frame:
+            raise ValueError("You must set a frame for document")
         return jinja2.Template("""<!DOCTYPE html>
         <html>
         <head>
@@ -113,6 +119,7 @@ class Document:
         <head>
         <body>
         {{ dependencies }}
+        <div id="frame" />
         {{ frame }}
         <div id="backtop"></div>
         <script>
@@ -124,42 +131,5 @@ class Document:
         </body>
         </html>""").render(
             dependencies=self.render_dependencies(),
-            frame=self.frame.render())
+            frame=self.frame.render(True))
 
-
-class Frame(Widget):
-    def __init__(self, sheets):
-        super(Frame, self).__init__()
-        self.sheets = sheets
-        self.id = "Frame"
-
-    def template(self):
-        return jinja2.Template("""
-        <Tabs :value="tabname">
-            {% for name, sheet in tabs %}
-            <TabPane label="{{name}}" name="{{sheet.id}}">
-                {{sheet}}
-            </TabPane>
-            {% endfor %}
-        </Tabs>
-        """).render(tabs=self.sheets)
-
-    def script(self):
-        return jinja2.Template("""
-        new Vue({
-            el: '#frame',
-            components: { {{components}} },
-            data: {
-                tabname: '{{tabs[0][1].id}}'
-            },
-            template: `{{template}}`
-        });""").render(
-            tabs=self.sheets,
-            components=",".join(sheet.id for name, sheet in self.sheets if not isinstance(sheet, BuiltinWidget)),
-            template=self.template())
-
-    def render(self):
-        return jinja2.Template("""
-        <div id="frame"></div>
-        {% if script %} <script> {{script}} </script> {% endif %}
-        """).render(id=self.id, script=self.script())

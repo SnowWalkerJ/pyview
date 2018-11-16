@@ -15,14 +15,17 @@ class Img(BuiltinWidget):
             self.img = self.fig_to_b64(img)
         elif isinstance(img, str):
             if img.startswith("https://") or img.startswith("http://"):
-                # Internet
+                # Internet URL
                 if embed:
                     img = self.download(img)
                     self.img = self.local_to_b64(img)
                 else:
                     self.img = img
+            elif img.startswith("data:image/"):
+                # Base64
+                self.img = img
             else:
-                # Local
+                # Local filename
                 self.img = self.local_to_b64(img)
 
     def tag_(self, attributes):
