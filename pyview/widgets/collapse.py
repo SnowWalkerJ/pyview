@@ -16,10 +16,13 @@ class Collapse(Widget):
         return jinja2.Template("""
         <Collapse>
         {%- for (i, (label, widget)) in widgets -%}
-            <Panel name="{{i}}">
+            <Panel name="{{i}}" v-model="model">
             {{label}}
             {{widget.tag(slot="content")}}
             </Panel>
         {%- endfor -%}
         </Collapse>
         """).render(widgets=enumerate(self.widgets))
+
+    def data(self):
+        return jinja2.Template("{model: [{{names}}]}").render(",".join('"{i}"'.format(i) for i in range(len(self.widgets))))
