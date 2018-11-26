@@ -6,8 +6,10 @@ from ..core import BuiltinWidget
 
 
 class WidgetList(BuiltinWidget):
-    def __init__(self, widgets: list):
+    def __init__(self, widgets: list=None):
         super(WidgetList, self).__init__()
+        if widgets is None:
+            widgets = []
         self.widgets = copy(widgets)
         self.depends_on = copy(widgets)
 

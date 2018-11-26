@@ -112,14 +112,13 @@ class Document:
         <script src="http://unpkg.com/iview/dist/iview.min.js"></script>
         <style>
             body {
-                padding: 0 5% 0 5%;
-                text-align: center;
+                padding: 0 8%;
             }
         </style>
         <head>
         <body>
         {{ dependencies }}
-        <div id="frame" />
+        <div id="frame"/>
         {{ frame }}
         <div id="backtop"></div>
         <script>
@@ -132,4 +131,3 @@ class Document:
         </html>""").render(
             dependencies=self.render_dependencies(),
             frame=self.frame.render(True))
-

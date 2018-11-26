@@ -23,8 +23,9 @@ class Controlled(Widget):
 
     def template(self):
         return jinja2.Template("""
-        <Split v-model="splitPosition">
-        <Form slot="left">
+        <Row>
+        <Col span="6">
+        <Form label-position="top">
         {%- for (name, controller) in controllers -%}
             <FormItem label="
                 {%- if controller.description -%}
@@ -36,12 +37,14 @@ class Controlled(Widget):
             </FormItem>
         {%- endfor -%}
         </Form>
-        <div slot="right">
+        </Col>
+        <Divider type="verticle" />
+        <Col span="18">
         {%- for (condition, content) in contents -%}
         {{content.tag(v_if=condition)}}
         {%- endfor -%}
-        </div>
-        </Split>
+        </Col>
+        </Row>
         """).render(controllers=self.params.items(), contents=self.contents)
 
     def data(self):

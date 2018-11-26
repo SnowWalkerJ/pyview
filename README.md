@@ -12,7 +12,6 @@ from pyview.widgets import *
 
 doc = Document()
 
-
 tabs = Tabs()
 
 # It's a single-image page
