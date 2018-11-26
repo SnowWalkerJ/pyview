@@ -18,7 +18,7 @@ class Collapse(Widget):
         {%- for (i, (label, widget)) in widgets -%}
             <Panel name="{{i}}">
             {{label}}
-            <{{widget.id}} slot="content" />
+            {{widget.tag(slot="content")}}
             </Panel>
         {%- endfor -%}
         </Collapse>
