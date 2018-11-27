@@ -71,7 +71,7 @@ class Widget:
                 key = "@" + key[2:]
             elif key[:2] == "v_":
                 key = key.replace("_", "-")
-            attributes.append(f' {key}="{value}"')
+            attributes.append(f" {key}='{value}'")
         attributes = "".join(attributes)
         return self.tag_(attributes)
 

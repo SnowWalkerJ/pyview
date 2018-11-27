@@ -19,7 +19,9 @@ class WidgetList(BuiltinWidget):
 
     def tag_(self, attributes):
         return jinja2.Template("""
+        <div {{attributes}}>
         {%- for widget in widgets -%}
             {{widget}}
         {%- endfor -%}
-        """).render(widgets=self.widgets)
+        </div>
+        """).render(widgets=self.widgets, attributes=attributes)
